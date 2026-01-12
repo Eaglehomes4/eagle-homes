@@ -1,0 +1,23 @@
+// app/Services/LedgerService.php
+public function calculateMonthlyBalance($houseId, $month)
+{
+    $house = House::find($houseId);
+    $rent = $house->base_rent;
+    
+    // Get Utilities entered by Secretary
+    $utilities = UtilityEntry::where('house_id', $houseId)->where('month_year', $month)->first();
+    $total_bills = $rent + ($utilities->water ?? 0) + ($utilities->electricity ?? 0) + ($utilities->garbage ?? 0);
+
+    // Get Immutable Bank Payments
+    $total_paid = Payment::where('house_id', $houseId)->whereMonth('payment_date', $month)->sum('amount');
+
+    // Get Carry Forward from previous month
+    $previous_balance = $this->getPreviousBalance($houseId);
+
+    $final_balance = ($total_bills + $previous_balance) - $total_paid;
+
+    return [
+        'balance' => $final_balance,
+        'status' => $final_balance <= 0 ? 'PAID/CREDIT' : 'ARREARS'
+    ];
+}
