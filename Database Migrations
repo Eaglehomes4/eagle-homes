@@ -1,0 +1,22 @@
+// Database structure for EAGLES HOME
+Schema::create('payments', function (Blueprint $table) {
+    $table->id();
+    $table->string('transaction_reference')->unique(); // MPESA Receipt Number
+    $table->foreignId('house_id')->constrained();
+    $table->decimal('amount', 10, 2);
+    $table->string('bank_source'); // Family or Co-op [cite: 42, 47]
+    $table->datetime('payment_date');
+    $table->timestamps();
+    // No delete() or update() methods allowed to ensure immutability [cite: 55, 93, 144]
+});
+
+Schema::create('utility_bills', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('house_id')->constrained();
+    $table->foreignId('secretary_id')->constrained('users'); // Audit trail [cite: 76, 150]
+    $table->decimal('water', 8, 2)->default(0);
+    $table->decimal('electricity', 8, 2)->default(0);
+    $table->decimal('garbage', 8, 2)->default(0);
+    $table->string('billing_month'); // e.g., "January 2026"
+    $table->timestamps();
+});
