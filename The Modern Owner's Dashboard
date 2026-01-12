@@ -1,0 +1,51 @@
+<div class="p-8 bg-slate-50 min-h-screen">
+    <div class="flex justify-between items-end mb-8">
+        <div>
+            <h1 class="text-4xl font-black text-slate-900">Executive Summary</h1>
+            <p class="text-slate-500">Portfolio Performance for {{ now()->format('F Y') }}</p>
+        </div>
+        
+        <button onclick="confirmLock()" class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg transition flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            LOCK MONTHLY DATA
+        </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border-t-4 border-blue-500">
+            <span class="text-slate-400 text-xs font-bold uppercase">Total Expected</span>
+            <h3 class="text-2xl font-bold text-slate-800">KES {{ number_format($totalPortfolioValue) }}</h3>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow-sm border-t-4 border-green-500">
+            <span class="text-slate-400 text-xs font-bold uppercase">Bank Receipts</span>
+            <h3 class="text-2xl font-bold text-green-600">KES {{ number_format($totalBankDeposits) }}</h3>
+        </div>
+        </div>
+
+    <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+        <table class="w-full">
+            <thead class="bg-slate-900 text-white">
+                <tr>
+                    <th class="p-5 text-left">Building</th>
+                    <th class="p-5 text-right">Target</th>
+                    <th class="p-5 text-right">Collected</th>
+                    <th class="p-5 text-center">Efficiency</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                @foreach($report as $row)
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="p-5 font-bold text-slate-700">{{ $row['building_name'] }}</td>
+                    <td class="p-5 text-right font-mono">KES {{ number_format($row['total_expected']) }}</td>
+                    <td class="p-5 text-right font-mono text-green-600 font-bold">KES {{ number_format($row['total_collected']) }}</td>
+                    <td class="p-5">
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ $row['collection_rate'] }}%"></div>
+                        </div>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
