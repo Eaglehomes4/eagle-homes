@@ -1,0 +1,42 @@
+// Create Buildings Table
+Schema::create('buildings', function (Blueprint $table) {
+    $table->id();
+    $table->string('name'); // e.g., Rosalia House
+    $table->timestamps();
+});
+
+// Create Houses Table (The Bank Reference Generator)
+Schema::create('houses', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('building_id')->constrained()->onDelete('cascade');
+    $table->string('house_number'); // e.g., JH-01
+    $table->string('bank_reference')->unique(); // For Co-op Bank API mapping
+    $table->decimal('base_rent', 10, 2);
+    $table->string('tenant_name')->nullable();
+    $table->string('tenant_phone')->nullable();
+    $table->timestamps();
+});
+
+// Create Immutable Payments Table
+Schema::create('payments', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('house_id')->constrained();
+    $table->string('transaction_id')->unique(); // M-Pesa Receipt
+    $table->decimal('amount', 10, 2);
+    $table->enum('bank_source', ['Co-op', 'Family']);
+    $table->timestamp('payment_date');
+    $table->timestamps(); 
+    // Logic: No 'update' or 'delete' methods will be created for this model.
+});
+
+// Create Secretary's Utility Table
+Schema::create('utility_entries', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('house_id')->constrained();
+    $table->foreignId('user_id')->constrained(); // Secretary ID for audit trail
+    $table->decimal('water', 10, 2)->default(0);
+    $table->decimal('electricity', 10, 2)->default(0);
+    $table->decimal('garbage', 10, 2)->default(200);
+    $table->string('month_year'); // e.g., "01-2026"
+    $table->timestamps();
+});
