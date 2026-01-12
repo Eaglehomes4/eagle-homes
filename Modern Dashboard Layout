@@ -1,0 +1,30 @@
+<div class="flex h-screen bg-gray-100 font-sans">
+    <aside class="w-64 bg-slate-900 text-white flex flex-col">
+        <div class="p-6 text-2xl font-bold border-b border-slate-700">EAGLES HOME</div>
+        <nav class="flex-grow p-4 space-y-2">
+            <a href="#" class="block p-3 rounded bg-blue-600">Dashboard</a>
+            <a href="#" class="block p-3 rounded hover:bg-slate-800">Buildings</a>
+            @if(Auth::user()->is_owner)
+            <a href="#" class="block p-3 rounded hover:bg-slate-800">Financial Reports</a>
+            <a href="#" class="block p-3 rounded hover:bg-slate-800 text-red-400">Lock Month</a>
+            @endif
+        </nav>
+        <div class="p-4 border-t border-slate-700">
+            <button class="w-full bg-red-500 py-2 rounded font-bold">LOGOUT</button>
+        </div>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto p-8">
+        <header class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Property Overview</h1>
+            <div class="text-gray-600">Welcome, {{ Auth::user()->name }}</div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-green-500">
+                <p class="text-sm text-gray-500 uppercase">Total Collected</p>
+                <p class="text-2xl font-bold text-gray-800">KES 840,200</p>
+            </div>
+            </div>
+    </main>
+</div>
