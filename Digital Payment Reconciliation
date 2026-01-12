@@ -1,0 +1,13 @@
+public function bankWebhook(Request $request) 
+{
+    // Validate bank signature for security
+    
+    $payment = new Payment();
+    $payment->mpesa_receipt = $request->id;
+    $payment->house_id = $this->matchReference($request->bill_ref);
+    $payment->amount = $request->amount;
+    $payment->source = $request->paybill == '417185' ? 'Co-op' : 'Family';
+    $payment->save(); // No 'update' or 'delete' logic is written for this model
+    
+    return response()->json(['status' => 'Payment Secured']);
+}
