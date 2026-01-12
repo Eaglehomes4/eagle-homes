@@ -1,0 +1,19 @@
+// app/Http/Controllers/PaymentController.php
+public function processBankCallback(Request $request) {
+    // 1. Find house by Bank Reference (e.g., JN-01)
+    $house = House::where('bank_reference', $request->AccountReference)->first();
+
+    if ($house) {
+        // 2. Log immutable payment
+        Payment::create([
+            'house_id' => $house->id,
+            'transaction_id' => $request->MpesaReceipt,
+            'amount' => $request->Amount,
+            'bank_source' => 'Co-operative',
+            'payment_date' => now()
+        ]);
+
+        // 3. System automatically applies this to rent + utilities
+        // Balance is updated instantly on the dashboard
+    }
+}
