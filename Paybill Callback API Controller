@@ -1,0 +1,34 @@
+namespace App\Http\Controllers\Api;
+
+use App\Models\Payment;
+use App\Models\House;
+use Illuminate\Http\Request;
+
+class PaybillController extends Controller {
+    public function handleCallback(Request $request) {
+        // 1. Verify API Security to prevent tampering [cite: 147]
+        if ($request->header('X-API-KEY') !== config('services.bank.key')) {
+            return response()->json(['status' => 'Unauthorized'], 401);
+        }
+
+        // 2. Extract House Reference (e.g., JH-01) [cite: 39, 49]
+        $houseRef = $request->input('BillRefNumber'); 
+        $house = House::where('house_code', $houseRef)->first();
+
+        if ($house) {
+            // 3. Create Immutable Record [cite: 58, 157]
+            Payment::create([
+                'transaction_reference' => $request->input('TransID'),
+                'amount' => $request->input('TransAmount'),
+                'house_id' => $house->id,
+                'bank_source' => $request->input('PaybillNumber') == '417185' ? 'Co-op' : 'Family',
+                'payment_date' => now(),
+            ]);
+
+            // 4. Trigger Ledger Update (Auto-calculate Paid/Arrears/Credit) [cite: 59, 143]
+            $this->updateMonthlyLedger($house);
+
+            return response()->json(['ResultCode' => 0, 'ResultDesc' => 'Accepted']);
+        }
+    }
+}
