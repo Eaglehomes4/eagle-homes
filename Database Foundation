@@ -26,3 +26,31 @@ Schema::create('payments', function (Blueprint $table) {
     // NO 'deleted_at' - Payments are permanent once recorded via API
     $table->timestamps();
 });
+// database/migrations/create_properties_table.php
+Schema::create('buildings', function (Blueprint $table) {
+    $table->id();
+    $table->string('name'); // e.g., Rosalia House, Josphine Njambi
+    $table->string('code')->unique(); // e.g., RH, JN
+    $table->timestamps();
+});
+
+Schema::create('houses', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('building_id')->constrained();
+    $table->string('house_no'); // e.g., 01, Shop 1
+    $table->string('bank_ref')->unique(); // JH-01 (Auto-generated for Co-op Bank)
+    $table->decimal('standard_rent', 10, 2);
+    $table->string('current_tenant')->nullable();
+    $table->timestamps();
+});
+
+Schema::create('payments', function (Blueprint $table) {
+    $table->id();
+    $table->string('mpesa_receipt')->unique();
+    $table->foreignId('house_id')->constrained();
+    $table->decimal('amount', 10, 2);
+    $table->enum('source', ['Co-op', 'Family']);
+    $table->timestamp('received_at');
+    // NO 'deleted_at' - Payments are permanent once recorded via API
+    $table->timestamps();
+});
