@@ -1,0 +1,35 @@
+<div class="bg-white rounded-xl shadow-lg p-6 border border-slate-200">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold text-slate-800">Utility Entry: {{ $selectedBuilding->name }}</h2>
+        <span class="text-sm font-medium text-slate-500">Period: {{ now()->format('M Y') }}</span>
+    </div>
+
+    <table class="w-full text-left border-collapse">
+        <thead class="bg-slate-50">
+            <tr>
+                <th class="p-4 border-b font-semibold text-slate-700">House No</th>
+                <th class="p-4 border-b font-semibold text-slate-700">Tenant</th>
+                <th class="p-4 border-b font-semibold text-slate-700">Water</th>
+                <th class="p-4 border-b font-semibold text-slate-700">Electricity</th>
+                <th class="p-4 border-b font-semibold text-slate-700">Garbage</th>
+                <th class="p-4 border-b font-semibold text-slate-700">Action</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+            @foreach($houses as $house)
+            <tr class="hover:bg-blue-50/50 transition">
+                <td class="p-4 font-mono text-blue-600 font-bold">{{ $house->house_number }}</td>
+                <td class="p-4 text-slate-600">{{ $house->tenant_name }}</td>
+                <td class="p-4"><input type="number" wire:model="water.{{$house->id}}" class="w-24 border-slate-300 rounded-md shadow-sm"></td>
+                <td class="p-4"><input type="number" wire:model="electricity.{{$house->id}}" class="w-24 border-slate-300 rounded-md shadow-sm"></td>
+                <td class="p-4 text-slate-400">200.00</td>
+                <td class="p-4">
+                    <button wire:click="save({{$house->id}})" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition">
+                        Update Ledger
+                    </button>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
