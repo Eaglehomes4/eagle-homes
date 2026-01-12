@@ -1,0 +1,41 @@
+<div class="flex h-screen bg-gray-50" x-data="{ sidebarOpen: true }">
+    <nav class="bg-slate-900 w-64 p-6 text-white flex flex-col" :class="{ 'hidden': !sidebarOpen }">
+        <h1 class="text-2xl font-extrabold tracking-tight mb-10 text-blue-400">EAGLES HOME</h1>
+        
+        <div class="space-y-4 flex-1">
+            <a href="/dashboard" class="flex items-center space-x-3 p-3 bg-blue-600 rounded-lg">
+                <span>Dashboard</span>
+            </a>
+            <a href="/units" class="flex items-center space-x-3 p-3 hover:bg-slate-800 rounded-lg">
+                <span>All Buildings</span>
+            </a>
+            @if(Auth::user()->is_owner)
+            <a href="/reports" class="flex items-center space-x-3 p-3 hover:bg-slate-800 rounded-lg">
+                <span>Financial Reports</span>
+            </a>
+            @endif
+        </div>
+
+        <form method="POST" action="/logout">
+            <button class="w-full bg-red-600 hover:bg-red-700 p-3 rounded-lg font-bold transition">
+                LOGOUT
+            </button>
+        </form>
+    </nav>
+
+    <main class="flex-1 p-10 overflow-y-auto">
+        <div class="flex justify-between items-center mb-10">
+            <h2 class="text-3xl font-bold text-slate-800">Operational Overview</h2>
+            <span class="bg-green-100 text-green-800 px-4 py-1 rounded-full text-sm font-semibold">
+                {{ now()->format('F Y') }} - System Active
+            </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <p class="text-gray-500 text-sm font-medium">Expected Rent</p>
+                <p class="text-3xl font-black text-slate-900">KES 1,240,000</p>
+            </div>
+            </div>
+    </main>
+</div>
