@@ -1,0 +1,59 @@
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use App\Models\Building;
+use App\Models\House;
+
+class EaglesHomeSeeder extends Seeder
+{
+    public function run()
+    {
+        // --- 1. JOSPHINE NJAMBI (54 Houses) ---
+        $njambi = Building::create(['name' => 'Josphine Njambi']);
+        $this->seedNjambi($njambi->id);
+
+        // --- 2. ROSALIA HOUSE (16 Houses) ---
+        $rosalia = Building::create(['name' => 'Rosalia House']);
+        $this->seedRosalia($rosalia->id);
+
+        // --- 3. MWIKI HOUSE (11 Houses) ---
+        $mwiki = Building::create(['name' => 'Mwiki House']);
+        $this->seedMwiki($mwiki->id);
+
+        // Add remaining buildings (Mary Nyambura, Ebenezer, etc.)
+    }
+
+    private function seedNjambi($buildingId) {
+        $units = [
+            ['no' => '1', 'tenant' => 'Hezron Maina', 'rent' => 7150],
+            ['no' => '14', 'tenant' => 'Occupied', 'rent' => 3650],
+            ['no' => '51', 'tenant' => 'Hezron Maina', 'rent' => 7150],
+            // ... all 54 units added here
+        ];
+        foreach ($units as $u) {
+            House::create([
+                'building_id' => $buildingId,
+                'house_number' => 'JN-' . $u['no'],
+                'bank_reference' => 'JN-' . $u['no'],
+                'base_rent' => $u['rent'],
+                'tenant_name' => $u['tenant']
+            ]);
+        }
+    }
+
+    private function seedMwiki($buildingId) {
+        $units = [
+            ['no' => '1', 'tenant' => 'Lucy Wachira', 'rent' => 8500],
+            ['no' => '11', 'tenant' => 'Caleb Kutindi', 'rent' => 35000], // Premium Unit
+        ];
+        foreach ($units as $u) {
+            House::create([
+                'building_id' => $buildingId,
+                'house_number' => 'MW-' . $u['no'],
+                'bank_reference' => 'MW-' . $u['no'],
+                'base_rent' => $u['rent'],
+                'tenant_name' => $u['tenant']
+            ]);
+        }
+    }
+}
