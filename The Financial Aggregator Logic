@@ -1,0 +1,28 @@
+// app/Http/Controllers/Owner/ReportController.php
+public function getGlobalReport() {
+    $report = Building::all()->map(function ($building) {
+        $houses = $building->houses;
+        
+        $expectedRent = $houses->sum('base_rent');
+        $utilityTotals = UtilityEntry::whereIn('house_id', $houses->pluck('id'))
+                            ->where('month_year', now()->format('m-Y'))
+                            ->sum(\DB::raw('water + electricity + garbage'));
+                            
+        $actualCollected = Payment::whereIn('house_id', $houses->pluck('id'))
+                            ->whereMonth('payment_date', now()->month)
+                            ->sum('amount');
+
+        return [
+            'building_name' => $building->name,
+            'total_expected' => $expectedRent + $utilityTotals,
+            'total_collected' => $actualCollected,
+            'variance' => $actualCollected - ($expectedRent + $utilityTotals),
+            'collection_rate' => ($expectedRent > 0) ? ($actualCollected / ($expectedRent + $utilityTotals)) * 100 : 0,
+        ];
+    });
+
+    $totalPortfolioValue = $report->sum('total_expected');
+    $totalBankDeposits = $report->sum('total_collected');
+
+    return view('owner.reports', compact('report', 'totalPortfolioValue', 'totalBankDeposits'));
+}
