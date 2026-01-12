@@ -1,0 +1,7 @@
+// app/Http/Middleware/EnsurePaymentIntegrity.php
+public function handle(Request $request, Closure $next) {
+    if (in_array($request->method(), ['PUT', 'PATCH', 'DELETE']) && $request->is('api/payments/*')) {
+        return response()->json(['error' => 'Bank payment records are immutable and cannot be modified.'], 403);
+    }
+    return $next($request);
+}
